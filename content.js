@@ -1,4 +1,5 @@
 const originalNodeText = new Map();
+const MAX_TRANSLATABLE_TEXT_LENGTH = 500;
 
 function isSkippableNode(node) {
   const parent = node.parentElement;
@@ -16,7 +17,7 @@ function shouldTranslateText(text) {
   }
 
   const trimmed = text.trim();
-  if (!trimmed || trimmed.length > 500) {
+  if (!trimmed || trimmed.length > MAX_TRANSLATABLE_TEXT_LENGTH) {
     return false;
   }
 
@@ -72,9 +73,10 @@ async function translatePage() {
   let translatedNodes = 0;
   for (const node of candidates) {
     const original = node.nodeValue;
-    const translated = translations[original.trim()];
+    const normalizedOriginal = original.trim();
+    const translated = translations[normalizedOriginal];
 
-    if (!translated || translated === original.trim()) {
+    if (!translated || translated === normalizedOriginal) {
       continue;
     }
 

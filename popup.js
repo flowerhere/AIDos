@@ -5,7 +5,7 @@ function getActiveTab() {
 async function sendToActiveTab(message) {
   const tab = await getActiveTab();
   if (!tab?.id) {
-    throw new Error('無法取得目前分頁：請確認分頁已載入完成');
+    throw new Error('無法取得目前分頁：請確認分頁已開啟且已載入完成');
   }
 
   return chrome.tabs.sendMessage(tab.id, message);

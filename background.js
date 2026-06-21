@@ -1,6 +1,6 @@
 const GOOGLE_TRANSLATE_API = 'https://translate.googleapis.com/translate_a/single';
 
-async function translateText(text, sourceLang = 'en', targetLang = 'zh-CN') {
+async function translateText(text, sourceLang = 'en', targetLang = 'zh-TW') {
   if (!text || !text.trim()) {
     return text;
   }
