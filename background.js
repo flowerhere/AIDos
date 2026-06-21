@@ -24,7 +24,6 @@ async function translateText(text, sourceLang = 'en', targetLang = 'zh-TW') {
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  void sender;
   if (message?.type !== 'TRANSLATE_TEXTS') {
     return;
   }
