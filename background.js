@@ -37,7 +37,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
           const translated = await translateText(text);
           return { text, translated, ok: true };
         } catch (error) {
-          console.warn('Translation failed for text snippet:', { text, error: error.message });
+          console.warn('Translation request failed for one snippet:', error.message);
           return { text, translated: text, ok: false };
         }
       })

@@ -1,4 +1,5 @@
 const originalNodeText = new Map();
+// Keep requests reasonably small to avoid large payloads and UI lag on long paragraphs.
 const MAX_TRANSLATABLE_TEXT_LENGTH = 500;
 
 function isSkippableNode(node) {
@@ -116,6 +117,6 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message?.type === 'RESTORE_PAGE') {
     const result = restorePage();
     sendResponse({ ok: true, ...result });
-    return;
+    return true;
   }
 });
