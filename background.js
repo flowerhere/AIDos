@@ -23,7 +23,8 @@ async function translateText(text, sourceLang = 'en', targetLang = 'zh-TW') {
   return segments.map((segment) => segment?.[0] || '').join('') || text;
 }
 
-chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  void sender;
   if (message?.type !== 'TRANSLATE_TEXTS') {
     return;
   }

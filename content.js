@@ -106,7 +106,8 @@ function restorePage() {
   return { restoredNodes };
 }
 
-chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  void sender;
   if (message?.type === 'TRANSLATE_PAGE') {
     translatePage()
       .then((result) => sendResponse({ ok: true, ...result }))
