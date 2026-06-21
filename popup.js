@@ -5,7 +5,7 @@ function getActiveTab() {
 async function sendToActiveTab(message) {
   const tab = await getActiveTab();
   if (!tab?.id) {
-    throw new Error('找不到目前分頁');
+    throw new Error('無法取得目前分頁：請確認分頁已載入完成');
   }
 
   return chrome.tabs.sendMessage(tab.id, message);
@@ -25,7 +25,8 @@ async function handleTranslate() {
       throw new Error(result?.error || '翻譯失敗');
     }
 
-    setStatus(`已翻譯 ${result.translatedNodes} 個文字節點`);
+    const failedText = result.failedCount ? `（${result.failedCount} 段翻譯失敗）` : '';
+    setStatus(`已翻譯 ${result.translatedNodes} 個文字節點${failedText}`);
   } catch (error) {
     setStatus(error.message);
   }

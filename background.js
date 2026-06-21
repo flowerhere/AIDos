@@ -35,14 +35,19 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       texts.map(async (text) => {
         try {
           const translated = await translateText(text);
-          return [text, translated];
-        } catch {
-          return [text, text];
+          return { text, translated, ok: true };
+        } catch (error) {
+          console.warn('Translation failed for text snippet:', { text, error: error.message });
+          return { text, translated: text, ok: false };
         }
       })
     );
 
-    sendResponse({ ok: true, translations: Object.fromEntries(entries) });
+    sendResponse({
+      ok: true,
+      translations: Object.fromEntries(entries.map((entry) => [entry.text, entry.translated])),
+      failedCount: entries.filter((entry) => !entry.ok).length
+    });
   })();
 
   return true;

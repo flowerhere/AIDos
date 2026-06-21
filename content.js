@@ -51,7 +51,10 @@ function requestTranslations(texts) {
         return;
       }
 
-      resolve(response.translations || {});
+      resolve({
+        translations: response.translations || {},
+        failedCount: response.failedCount || 0
+      });
     });
   });
 }
@@ -64,14 +67,14 @@ async function translatePage() {
     return { translatedNodes: 0 };
   }
 
-  const translations = await requestTranslations(uniqueTexts);
+  const { translations, failedCount } = await requestTranslations(uniqueTexts);
 
   let translatedNodes = 0;
   for (const node of candidates) {
     const original = node.nodeValue;
     const translated = translations[original.trim()];
 
-    if (!translated || translated === original) {
+    if (!translated || translated === original.trim()) {
       continue;
     }
 
@@ -80,7 +83,7 @@ async function translatePage() {
     translatedNodes += 1;
   }
 
-  return { translatedNodes };
+  return { translatedNodes, failedCount };
 }
 
 function restorePage() {
