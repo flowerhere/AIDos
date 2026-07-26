@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "AIDos Immersive Translator",
   "version": "1.0.0",
-  "description": "Translate English webpage text to Chinese using Google Translate service.",
+  "description": "Translate webpage text between Chinese, English, Japanese, Korean, Spanish, Italian, and Arabic.",
   "permissions": ["activeTab"],
   "host_permissions": [
     "<all_urls>",
