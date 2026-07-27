@@ -22,7 +22,7 @@ function shouldTranslateText(text) {
     return false;
   }
 
-  return /[A-Za-z]/.test(trimmed);
+  return /[\p{L}\p{N}]/u.test(trimmed);
 }
 
 function collectTranslatableNodes(root) {
@@ -40,16 +40,16 @@ function collectTranslatableNodes(root) {
   return nodes;
 }
 
-function requestTranslations(texts) {
+function requestTranslations(texts, sourceLanguage) {
   return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage({ type: 'TRANSLATE_TEXTS', texts }, (response) => {
+    chrome.runtime.sendMessage({ type: 'TRANSLATE_TEXTS', texts, sourceLanguage }, (response) => {
       if (chrome.runtime.lastError) {
         reject(new Error(chrome.runtime.lastError.message));
         return;
       }
 
       if (!response?.ok) {
-        reject(new Error('Failed to translate texts'));
+        reject(new Error(response?.error || 'Failed to translate texts'));
         return;
       }
 
@@ -61,7 +61,7 @@ function requestTranslations(texts) {
   });
 }
 
-async function translatePage() {
+async function translatePage({ sourceLanguage }) {
   const candidates = collectTranslatableNodes(document.body).filter((node) => !originalNodeText.has(node));
   const uniqueTexts = [...new Set(candidates.map((node) => node.nodeValue.trim()))];
 
@@ -69,7 +69,7 @@ async function translatePage() {
     return { translatedNodes: 0 };
   }
 
-  const { translations, failedCount } = await requestTranslations(uniqueTexts);
+  const { translations, failedCount } = await requestTranslations(uniqueTexts, sourceLanguage);
 
   let translatedNodes = 0;
   for (const node of candidates) {
@@ -108,7 +108,9 @@ function restorePage() {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message?.type === 'TRANSLATE_PAGE') {
-    translatePage()
+    translatePage({
+      sourceLanguage: message.sourceLanguage
+    })
       .then((result) => sendResponse({ ok: true, ...result }))
       .catch((error) => sendResponse({ ok: false, error: error.message }));
     return true;
