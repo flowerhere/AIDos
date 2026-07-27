@@ -43,6 +43,15 @@
         background: #fff;
       }
 
+      .target-language {
+        margin: 0;
+        padding: 8px;
+        border-radius: 8px;
+        font-size: 12px;
+        color: #166534;
+        background: #f0fdf4;
+      }
+
       button {
         border: 0;
         border-radius: 8px;
@@ -76,10 +85,7 @@
         網站語言
         <select id="source-language" aria-label="網站語言"></select>
       </label>
-      <label>
-        目標語言
-        <select id="target-language" aria-label="目標語言"></select>
-      </label>
+      <p class="target-language">翻譯為：繁體中文</p>
     </div>
     <div class="actions">
       <button id="translate">翻譯目前頁面</button>

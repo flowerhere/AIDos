@@ -13,9 +13,7 @@ const LANGUAGE_OPTIONS = [
 ];
 
 const DEFAULT_SOURCE_LANGUAGE = 'en';
-const DEFAULT_TARGET_LANGUAGE = 'zh-TW';
 const SOURCE_LANGUAGE_KEY = 'aidosSourceLanguage';
-const TARGET_LANGUAGE_KEY = 'aidosTargetLanguage';
 
 async function sendToActiveTab(message) {
   const tab = await getActiveTab();
@@ -43,46 +41,33 @@ function populateLanguageSelect(select, selectedLanguage) {
   );
 }
 
-function getSelectedLanguages() {
+function saveSelectedLanguage() {
   const sourceLanguage = document.getElementById('source-language').value;
-  const targetLanguage = document.getElementById('target-language').value;
-  return { sourceLanguage, targetLanguage };
-}
-
-function saveSelectedLanguages() {
-  const { sourceLanguage, targetLanguage } = getSelectedLanguages();
   localStorage.setItem(SOURCE_LANGUAGE_KEY, sourceLanguage);
-  localStorage.setItem(TARGET_LANGUAGE_KEY, targetLanguage);
 }
 
 function initializeLanguageControls() {
   const savedSourceLanguage = localStorage.getItem(SOURCE_LANGUAGE_KEY) || DEFAULT_SOURCE_LANGUAGE;
-  const savedTargetLanguage = localStorage.getItem(TARGET_LANGUAGE_KEY) || DEFAULT_TARGET_LANGUAGE;
   const sourceLanguageSelect = document.getElementById('source-language');
-  const targetLanguageSelect = document.getElementById('target-language');
 
   populateLanguageSelect(sourceLanguageSelect, savedSourceLanguage);
-  populateLanguageSelect(targetLanguageSelect, savedTargetLanguage);
-
-  sourceLanguageSelect.addEventListener('change', saveSelectedLanguages);
-  targetLanguageSelect.addEventListener('change', saveSelectedLanguages);
+  sourceLanguageSelect.addEventListener('change', saveSelectedLanguage);
 }
 
 async function handleTranslate() {
   try {
-    const { sourceLanguage, targetLanguage } = getSelectedLanguages();
+    const sourceLanguage = document.getElementById('source-language').value;
 
-    if (sourceLanguage === targetLanguage) {
-      setStatus('網站語言與目標語言不可相同');
+    if (sourceLanguage === 'zh-TW') {
+      setStatus('網站內容已經是中文，無需翻譯');
       return;
     }
 
-    saveSelectedLanguages();
+    saveSelectedLanguage();
     setStatus('翻譯中...');
     const result = await sendToActiveTab({
       type: 'TRANSLATE_PAGE',
-      sourceLanguage,
-      targetLanguage
+      sourceLanguage
     });
 
     if (!result?.ok) {
